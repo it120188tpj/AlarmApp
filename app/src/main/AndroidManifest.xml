@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.pbank.shakealarmclock" >
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/application_icon"
+        android:label="@string/app_MainName"
+        android:theme="@style/AppTheme" >
+
+        <activity
+            android:name=".ActivityMain"
+            android:label="@string/app_MainName"
+            android:icon="@drawable/application_icon">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ActivityAddAlarmClock"
+            android:label="@string/app_AddItemName">
+        </activity>
+
+        <activity
+            android:name=".ActivityAlarm"
+            android:label="@string/app_Alarm"
+            android:theme="@android:style/Theme.NoTitleBar">
+        </activity>
+
+        <receiver android:name=".MyReceiver"></receiver>
+
+    </application>
+
+</manifest>

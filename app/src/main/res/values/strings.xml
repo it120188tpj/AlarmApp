@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_MainName">Shake будильник</string>
+    <string name="app_AddItemName">Новая запись</string>
+    <string name="app_Alarm">Будильник</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_exit">Выход</string>
+    <string name="delete_item">Оу, ты точно хочешь удалить?</string>
+    <string name="yes">Да!</string>
+    <string name="cancel">Затупил(а)...</string>
+    <color name="orange">#FFD07A</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="blue">#3DA0F7</color>
+    <color name="grey_light">#C7CAD6</color>
+
+</resources>

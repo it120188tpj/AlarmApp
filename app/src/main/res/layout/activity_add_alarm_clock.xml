@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <EditText
+        android:id="@+id/et_nameViewItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:hint="Имя будильника"
+        android:layout_marginTop="10dp"
+        android:textColorHint="@color/material_blue_grey_800"
+        android:background="@color/material_blue_grey_950">
+        <requestFocus/>
+    </EditText>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_setTimeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Установить время"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@color/blue"/>
+
+        <TextView
+            android:id="@+id/tv_timeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='00:00'
+            android:textSize="50dp"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/blue"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_povtorDay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text='Повтор сигнала'
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:background="@color/material_blue_grey_950"
+        android:textSize="@dimen/abc_text_size_small_material"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/material_blue_grey_950">
+        <ToggleButton
+            android:id="@+id/btn_monday"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:textOn="ПН"
+            android:textOff="ПН"/>
+        <ToggleButton
+            android:id="@+id/btn_tuesday"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:textOn="ВТ"
+            android:textOff="ВТ"/>
+        <ToggleButton
+            android:id="@+id/btn_wednesday"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:textOn="СР"
+            android:textOff="СР"/>
+        <ToggleButton
+            android:id="@+id/btn_thursday"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:textOn="ЧТ"
+            android:textOff="ЧТ"/>
+        <ToggleButton
+            android:id="@+id/btn_friday"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:textOn="ПТ"
+            android:textOff="ПТ"/>
+        <ToggleButton
+            android:id="@+id/btn_saturday"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:textOn="СБ"
+            android:textOff="СБ"/>
+        <ToggleButton
+            android:id="@+id/btn_sunday"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:textOn="ВС"
+            android:textOff="ВС"/>
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Вибро режим"
+            android:textSize="@dimen/abc_text_size_medium_material"
+            android:layout_weight="1"
+            android:textColor="@color/white"/>
+        <CheckBox
+            android:id="@+id/checkbox_vibro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:button="@drawable/checkbox_border_new"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_media"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:background="@color/material_blue_grey_950"
+        android:layout_marginTop="15dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_media_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="Мелодия сигнала"
+                android:textSize="@dimen/abc_text_size_medium_material"/>
+            <TextView
+                android:id="@+id/tv_media_name_track"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey_light"
+                android:text=""/>
+        </LinearLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/strelka"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp">
+        <Button
+            android:id="@+id/btn_saveItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Сохранить"
+            android:layout_weight="1"
+            android:background="@color/blue"/>
+        <Button
+            android:id="@+id/btn_cancelItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Отмена"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:background="@color/blue"/>
+    </LinearLayout>
+
+</LinearLayout>
