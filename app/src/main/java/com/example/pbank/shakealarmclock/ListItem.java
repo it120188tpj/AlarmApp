@@ -36,7 +36,7 @@ public class ListItem implements Serializable{
         this.days = days;
         this.vibroOnOff = vibroOnOff;
         this.rington = rington;
-        this.onOff = false;
+        this.onOff = true;
     }
 
     public String getName() {

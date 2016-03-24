@@ -183,6 +183,9 @@ public class ActivityMain extends Activity implements OnClickListener {
 
                     //говорим нашему адаптеру ОБНОВИСЬ!
                     customAdapter.notifyDataSetChanged();
+
+                    //
+                    saveAlarmClockList();
                 }
 
             }
@@ -201,6 +204,8 @@ public class ActivityMain extends Activity implements OnClickListener {
 
                     //говорим нашему адаптеру ОБНОВИСЬ!
                     customAdapter.notifyDataSetChanged();
+
+                    saveAlarmClockList();
                 }
 
             }
