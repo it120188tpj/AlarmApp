@@ -6,9 +6,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 
@@ -29,8 +31,10 @@ public class SchedulerAlarmClock extends Activity {
 
     }
 
+
+
     //метод когда изменяется список будильников и нужно проверить и если что запланировать будильники на сегодня
-    public void saveAlarmTodayToSheduler(){
+    public void saveAlarmTodayToSheduler() {
 
         //дата и время текущий момент
         Calendar dateTimeNow = Calendar.getInstance();

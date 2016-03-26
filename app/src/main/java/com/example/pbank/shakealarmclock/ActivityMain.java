@@ -21,6 +21,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 
@@ -122,6 +123,7 @@ public class ActivityMain extends Activity implements OnClickListener {
 
         for (int i = 0; i < arrayListItem.size(); i++) {
             ed.putString(SAVED_LIST+i, arrayListItem.get(i).toJSON());
+            ed.putString(SAVED_LIST+i, arrayListItem.get(i).toJSON());
         }
 
         ed.putInt("list_size", arrayListItem.size());
@@ -185,7 +187,7 @@ public class ActivityMain extends Activity implements OnClickListener {
                     customAdapter.notifyDataSetChanged();
 
                     //
-                    saveAlarmClockList();
+                    testAlarm();
                 }
 
             }
@@ -210,6 +212,26 @@ public class ActivityMain extends Activity implements OnClickListener {
 
             }
         }
+    }
+
+    public void testAlarm() {
+        Long time = new GregorianCalendar().getTimeInMillis()+1000;
+
+        // Create an Intent and set the class that will execute when the Alarm triggers. Here we have
+        // specified AlarmReceiver in the Intent. The onReceive() method of this class will execute when the broadcast from your alarm is received.
+        Intent intentAlarm = new Intent(ActivityMain.this, MyReceiver.class);
+        intentAlarm.putExtra("startClass","ActivityAlarm");
+        intentAlarm.putExtra("name", "test");
+        intentAlarm.putExtra("time", "6" + ":" + "66");
+        intentAlarm.putExtra("rington", "Song... la...la...la");
+
+        // Get the Alarm Service.
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        // Set the alarm for a particular time.
+        alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(this, 1, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
+        Toast.makeText(this, "Alarm Scheduled for Tommrrow", Toast.LENGTH_LONG).show();
+
     }
 
 
