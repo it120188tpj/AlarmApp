@@ -60,9 +60,6 @@ public class ActivityMain extends Activity implements OnClickListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
-
     }
 
     // Вызывается перед выходом из "полноценного" состояния.
@@ -188,26 +185,6 @@ public class ActivityMain extends Activity implements OnClickListener {
         }
     }
 
-    public void testAlarm() {
-        Long time = new GregorianCalendar().getTimeInMillis()+1000;
-
-        // Create an Intent and set the class that will execute when the Alarm triggers. Here we have
-        // specified AlarmReceiver in the Intent. The onReceive() method of this class will execute when the broadcast from your alarm is received.
-        Intent intentAlarm = new Intent(ActivityMain.this, MyReceiver.class);
-        intentAlarm.putExtra("startClass","ActivityAlarm");
-        intentAlarm.putExtra("name", "test");
-        intentAlarm.putExtra("time", "6" + ":" + "66");
-        intentAlarm.putExtra("rington", "Song... la...la...la");
-
-        // Get the Alarm Service.
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-        // Set the alarm for a particular time.
-        alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(this, 1, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
-        Toast.makeText(this, "Alarm Scheduled for Tommrrow", Toast.LENGTH_LONG).show();
-
-    }
-
     public void saveAlarmTodayToSheduler() {
 
         sharedPreferences = getPreferences(MODE_PRIVATE);
@@ -247,6 +224,7 @@ public class ActivityMain extends Activity implements OnClickListener {
                         alarmToday.setTime(new Date(System.currentTimeMillis()));
                         alarmToday.set(Calendar.HOUR_OF_DAY, hour);
                         alarmToday.set(Calendar.MINUTE, minute);
+                        alarmToday.set(Calendar.SECOND, 00);
                         long dateTimeFutureInMilSec = alarmToday.getTimeInMillis();
 
                         //если есть запланированные будильники на сегодня, то сейчас мы это сделаем
