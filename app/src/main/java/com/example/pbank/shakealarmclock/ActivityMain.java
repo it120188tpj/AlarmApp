@@ -2,15 +2,11 @@ package com.example.pbank.shakealarmclock;
 
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.SystemClock;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,18 +21,14 @@ import java.util.*;
 
 public class ActivityMain extends Activity implements OnClickListener {
 
+    private final static String TAG = "MyLogs";
+    private final static String SAVED_LIST = "saved_list";
     private Button btnAddItem;
     private ListView listViewItem;
     private ArrayList<ListItem> arrayListItem;
     private SharedPreferences sharedPreferences;
-
     private MyAdapterListItem customAdapter;
-    private static final String TAG = "MyLogs";
-    final String SAVED_LIST = "saved_list";
-
     private AlarmManager alarmManager;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +36,11 @@ public class ActivityMain extends Activity implements OnClickListener {
         setContentView(R.layout.activity_main);
 
         arrayListItem = new ArrayList<ListItem>();
-
         btnAddItem = (Button) findViewById(R.id.btnAddItem);
         btnAddItem.setOnClickListener(this);
-
         listViewItem = (ListView) findViewById(R.id.listViewItem);
         customAdapter = new MyAdapterListItem(this,arrayListItem);
-
         listViewItem.setAdapter(customAdapter);
-
         alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 
         try {
@@ -69,8 +57,7 @@ public class ActivityMain extends Activity implements OnClickListener {
         // потоков, закрытия соединений с базой данных и т. д.
         super.onDestroy();
 
-        saveAlarmTodayToSheduler();
-
+        saveAlarmToSheduler();
     }
 
 
@@ -90,7 +77,7 @@ public class ActivityMain extends Activity implements OnClickListener {
 
         switch(item.getItemId()){
             case R.id.action_exit:
-                saveAlarmTodayToSheduler();
+                saveAlarmToSheduler();
                 finish();
                 break;
             case R.id.action_settings:
@@ -103,8 +90,23 @@ public class ActivityMain extends Activity implements OnClickListener {
     //метод для нажатия на кнопку Back
     @Override
     public void onBackPressed() {
-        saveAlarmTodayToSheduler();
+        saveAlarmToSheduler();
         finish();
+    }
+
+    private void saveAlarmToSheduler() {
+
+        // стягиваем данные о листе будильник с Preferences в памяти
+        sharedPreferences = getPreferences(MODE_PRIVATE);
+
+        SchedulerAlarmClock schedulerAlarmClock = new SchedulerAlarmClock();
+        schedulerAlarmClock.setContext(this.getApplicationContext());
+        schedulerAlarmClock.setAlarmManager(alarmManager);
+        schedulerAlarmClock.setArrayListItem(arrayListItem);
+        schedulerAlarmClock.setSharedPreferences(sharedPreferences);
+
+        schedulerAlarmClock.saveAlarmTodayToSheduler();
+
     }
 
     //метод который восстанавливает список будильников в приложение
@@ -158,7 +160,7 @@ public class ActivityMain extends Activity implements OnClickListener {
                     //говорим нашему адаптеру ОБНОВИСЬ!
                     customAdapter.notifyDataSetChanged();
 
-                    saveAlarmTodayToSheduler();
+                    saveAlarmToSheduler();
                 }
 
             }
@@ -178,76 +180,81 @@ public class ActivityMain extends Activity implements OnClickListener {
                     //говорим нашему адаптеру ОБНОВИСЬ!
                     customAdapter.notifyDataSetChanged();
 
-                    saveAlarmTodayToSheduler();
+                    saveAlarmToSheduler();
                 }
 
             }
         }
     }
 
-    public void saveAlarmTodayToSheduler() {
-
-        sharedPreferences = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor ed = sharedPreferences.edit();
-        ed.clear();
-
-        for (int i = 0; i < arrayListItem.size(); i++) {
-            ed.putString(SAVED_LIST+i, arrayListItem.get(i).toJSON());
-            ed.putString(SAVED_LIST+i, arrayListItem.get(i).toJSON());
-        }
-
-        ed.putInt("list_size", arrayListItem.size());
-        ed.commit();
-
-        //дата и время текущий момент
-        Calendar dateTimeNow = Calendar.getInstance();
-        dateTimeNow.setTime(new Date(System.currentTimeMillis()));
-        //номер дня недели сегодня
-        int dayInWeekNow = dateTimeNow.get(Calendar.DAY_OF_WEEK);
-        //время в милисекундах в текущий момент
-        long dateTimeNowInMilSec = dateTimeNow.getTimeInMillis();
-        //перебираем список будильников и находит тут который еще должен сегодня сработать
-        for (int i = 0; i < arrayListItem.size(); i++) {
-            //получаем флаг включен будильник или нет
-            boolean onOff = arrayListItem.get(i).getOnOff();
-            //получаем список дней недели
-            List<Integer> days = arrayListItem.get(i).getDays();
-            //если будильник включен(true), то планируем его
-            if(onOff){
-                //ищем день недели в списке который совпадает с сегодня
-                for (int j = 0; j < days.size(); j++) {
-                    //если нашли совпадающий день, то создаем будильник на сегодня
-                    if (days.get(j).equals(dayInWeekNow)) {
-                        int hour = arrayListItem.get(i).getCalendar().get(Calendar.HOUR_OF_DAY);
-                        int minute = arrayListItem.get(i).getCalendar().get(Calendar.MINUTE);
-                        Calendar alarmToday = Calendar.getInstance();
-                        alarmToday.setTime(new Date(System.currentTimeMillis()));
-                        alarmToday.set(Calendar.HOUR_OF_DAY, hour);
-                        alarmToday.set(Calendar.MINUTE, minute);
-                        alarmToday.set(Calendar.SECOND, 00);
-                        long dateTimeFutureInMilSec = alarmToday.getTimeInMillis();
-
-                        //если есть запланированные будильники на сегодня, то сейчас мы это сделаем
-                        if(dateTimeFutureInMilSec > dateTimeNowInMilSec) {
-
-                            Intent intentAlarm = new Intent(ActivityMain.this, MyReceiver.class);
-
-                            intentAlarm.putExtra("startClass","ActivityAlarm");
-                            intentAlarm.putExtra("name", arrayListItem.get(i).getName().toString());
-                            intentAlarm.putExtra("time", hour + ":" + minute);
-                            intentAlarm.putExtra("rington", arrayListItem.get(i).getRingtone().toString());
-
-                            //ВОТ ТУТ ОТВАЛИВАЕТСЯ!!!
-                            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, i, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                            alarmManager.set(AlarmManager.RTC_WAKEUP, dateTimeFutureInMilSec, pendingIntent);
-
-                        }
-                    }
-                }
-            }
-        }
-    }
+    /**
+     * Метод который сохраняет данные в память (Preferences)
+     */
+//    private void saveDataToMemory() {
+//        sharedPreferences = getPreferences(MODE_PRIVATE);
+//        SharedPreferences.Editor ed = sharedPreferences.edit();
+//        ed.clear();
+//
+//        for (int i = 0; i < arrayListItem.size(); i++) {
+//            ed.putString(SAVED_LIST + i, arrayListItem.get(i).toJSON());
+//            ed.putString(SAVED_LIST + i, arrayListItem.get(i).toJSON());
+//        }
+//
+//        ed.putInt("list_size", arrayListItem.size());
+//        ed.commit();
+//    }
+//
+//    private void saveAlarmTodayToSheduler() {
+//
+//        // сохраняем в память
+//        saveDataToMemory();
+//
+//        //дата и время текущий момент
+//        Calendar dateTimeNow = Calendar.getInstance();
+//        dateTimeNow.setTime(new Date(System.currentTimeMillis()));
+//        //номер дня недели сегодня
+//        int dayInWeekNow = dateTimeNow.get(Calendar.DAY_OF_WEEK);
+//        //время в милисекундах в текущий момент
+//        long dateTimeNowInMilSec = dateTimeNow.getTimeInMillis();
+//        //перебираем список будильников и находит тут который еще должен сегодня сработать
+//        for (int i = 0; i < arrayListItem.size(); i++) {
+//            //получаем флаг включен будильник или нет
+//            boolean onOff = arrayListItem.get(i).getOnOff();
+//            //получаем список дней недели
+//            List<Integer> days = arrayListItem.get(i).getDays();
+//            //если будильник включен(true), то планируем его
+//            if(onOff){
+//                //ищем день недели в списке который совпадает с сегодня
+//                for (int j = 0; j < days.size(); j++) {
+//                    //если нашли совпадающий день, то создаем будильник на сегодня
+//                    if (days.get(j).equals(dayInWeekNow)) {
+//                        int hour = arrayListItem.get(i).getCalendar().get(Calendar.HOUR_OF_DAY);
+//                        int minute = arrayListItem.get(i).getCalendar().get(Calendar.MINUTE);
+//                        Calendar alarmToday = Calendar.getInstance();
+//                        alarmToday.setTime(new Date(System.currentTimeMillis()));
+//                        alarmToday.set(Calendar.HOUR_OF_DAY, hour);
+//                        alarmToday.set(Calendar.MINUTE, minute);
+//                        alarmToday.set(Calendar.SECOND, 00);
+//                        long dateTimeFutureInMilSec = alarmToday.getTimeInMillis();
+//
+//                        //если есть запланированные будильники на сегодня, то сейчас мы это сделаем
+//                        if(dateTimeFutureInMilSec > dateTimeNowInMilSec) {
+//
+//                            Intent intentAlarm = new Intent(ActivityMain.this, MyReceiver.class);
+//                            intentAlarm.putExtra("startClass","ActivityAlarm");
+//                            intentAlarm.putExtra("name", arrayListItem.get(i).getName().toString());
+//                            intentAlarm.putExtra("time", hour + ":" + minute);
+//                            intentAlarm.putExtra("rington", arrayListItem.get(i).getRingtone().toString());
+//
+//                            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, i, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+//                            alarmManager.set(AlarmManager.RTC_WAKEUP, dateTimeFutureInMilSec, pendingIntent);
+//
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
 
 }
