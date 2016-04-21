@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.*;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.FloatMath;
 import android.util.Log;
@@ -28,6 +31,8 @@ public class ActivityAlarm extends Activity implements SensorEventListener {
     private long lastTime = 0;
     private float lastX, lastY, lastZ;
     private static final int THRESHOLD = 600;
+    private Ringtone ringtone;
+    private Uri uriRingtone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,9 @@ public class ActivityAlarm extends Activity implements SensorEventListener {
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
+        uriRingtone = (Uri) intentIn.getSerializableExtra("uriRington");
+
+        playRington();
     }
 
     @Override
@@ -62,6 +70,7 @@ public class ActivityAlarm extends Activity implements SensorEventListener {
                 float speed = Math.abs(x + y + z - lastX - lastY - lastZ)/ diffTime * 10000;
                 if (speed > THRESHOLD) {
                     finish();
+                    ringtone.stop();
                 }
                 lastX = x;
                 lastY = y;
@@ -83,6 +92,14 @@ public class ActivityAlarm extends Activity implements SensorEventListener {
     protected void onResume() {
         super.onResume();
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    private void playRington() {
+
+        Uri notification = RingtoneManager.getActualDefaultRingtoneUri(getApplicationContext(), RingtoneManager.TYPE_RINGTONE);
+        ringtone = RingtoneManager.getRingtone(getApplicationContext(), notification);
+        ringtone.play();
+
     }
 
 

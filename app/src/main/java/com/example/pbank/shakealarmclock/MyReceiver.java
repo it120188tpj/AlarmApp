@@ -18,6 +18,7 @@ public class MyReceiver extends BroadcastReceiver {
             scheduledIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             scheduledIntent.putExtra("name", intent.getStringExtra("name"));
             scheduledIntent.putExtra("time", intent.getStringExtra("time"));
+            scheduledIntent.putExtra("uriRington", intent.getSerializableExtra("uriRington"));
 
             context.startActivity(scheduledIntent);
         }

@@ -1,5 +1,6 @@
 package com.example.pbank.shakealarmclock;
 
+import android.net.Uri;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -24,19 +25,21 @@ public class ListItem implements Serializable{
     private boolean vibroOnOff;
     private int index = 99;
     private String rington;
+    private Uri uriRington;
 
 
     public ListItem(){
     }
 
 
-    public ListItem(String name, Calendar calendar, List<Integer> days, boolean vibroOnOff, String rington){
+    public ListItem(String name, Calendar calendar, List<Integer> days, boolean vibroOnOff, String rington, Uri uriRington){
         this.name = name;
         this.calendar = calendar;
         this.days = days;
         this.vibroOnOff = vibroOnOff;
         this.rington = rington;
         this.onOff = true;
+        //this.uriRington = uriRington;
     }
 
     public String getName() {
@@ -79,6 +82,14 @@ public class ListItem implements Serializable{
         return rington;
     }
 
+    public Uri getUriRington() {
+        return uriRington;
+    }
+
+    public void setUriRington(Uri uriRington) {
+        this.uriRington = uriRington;
+    }
+
     public String toJSON (){
 
         JSONObject jsonObject = new JSONObject();
@@ -114,6 +125,9 @@ public class ListItem implements Serializable{
             //записываем рингтон
             jsonObject.put("rington",getRingtone());
 
+            //зaписываем объект
+            jsonObject.put("uriRington",getUriRington());
+
             //записываем ВКЛ/ВЫКЛ
             jsonObject.put("onOff",getOnOff());
 
@@ -135,7 +149,6 @@ public class ListItem implements Serializable{
         //сэтим имя будильника
         this.name = jObj.getString("name");
 
-
         //сэтим дату и время
         JSONObject subObj = jObj.getJSONObject("calendar");
         int year = Integer.valueOf(subObj.getString("year"));
@@ -144,15 +157,12 @@ public class ListItem implements Serializable{
         int hour = Integer.valueOf(subObj.getString("hour"));
         int minute = Integer.valueOf(subObj.getString("minute"));
 
-
         this.calendar = Calendar.getInstance();
-
         this.calendar.set(Calendar.YEAR,year);
         this.calendar.set(Calendar.MONTH,month);
         this.calendar.set(Calendar.DATE,day);
         this.calendar.set(Calendar.HOUR_OF_DAY,hour);
         this.calendar.set(Calendar.MINUTE,minute);
-
 
         //сэтим дни недели
         this.days = new ArrayList<Integer>();
@@ -162,18 +172,17 @@ public class ListItem implements Serializable{
             this.days.add(obj.getInt("days"));
         }
 
-
         //сэтим вибро вкл или выкл
         this.vibroOnOff = jObj.getBoolean("vibro");
-
 
         //сэтим рингтон
         this.rington = jObj.getString("rington");
 
+        //сэтим объект uri рингтон
+        this.uriRington = (Uri) jObj.get("uriRington");
+
         //сэтим ВКЛ/ВЫКЛ
         this.onOff = jObj.getBoolean("onOff");
-
-
     }
 
 

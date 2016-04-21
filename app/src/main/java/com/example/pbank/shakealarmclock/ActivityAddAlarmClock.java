@@ -8,13 +8,11 @@ import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -24,6 +22,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.view.View.OnClickListener;
 import android.widget.ToggleButton;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,8 +36,19 @@ public class ActivityAddAlarmClock extends Activity implements OnClickListener{
 
     private int DIALOG_TIME = 1;
     private int myHour,myMinute;
-    private TextView tvTime;
-    private Button btn_setTime,btn_saveItem,btn_cancelItem;
+
+    @Bind(R.id.tv_timeView)
+    TextView tvTime;
+
+    @Bind(R.id.btn_setTimeView)
+    Button btn_setTime;
+
+    @Bind(R.id.btn_saveItem)
+    Button btn_saveItem;
+
+    @Bind(R.id.btn_cancelItem)
+    Button btn_cancelItem;
+
     private EditText et_nameViewItem;
     private Calendar calendarTimePicker;
     private Calendar calendarItem;
@@ -49,28 +60,23 @@ public class ActivityAddAlarmClock extends Activity implements OnClickListener{
     private LinearLayout ll_media;
     private TextView tv_media_name_track;
     private String ringtone;
+    private Uri ringtoneUri;
 
 
     /** Called when the activity is first created. */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_alarm_clock);
-
+        ButterKnife.bind(this);
 
         //получаем интент с данными для редактирования с основого активити
         Intent intent = getIntent();
         itemEdit = (ListItem) intent.getSerializableExtra("itemEdit");
 
-        tvTime = (TextView) findViewById(R.id.tv_timeView);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
-        btn_setTime = (Button) findViewById(R.id.btn_setTimeView);
         btn_setTime.setOnClickListener(this);
-
-        btn_saveItem = (Button) findViewById(R.id.btn_saveItem);
         btn_saveItem.setOnClickListener(this);
-
-        btn_cancelItem = (Button) findViewById(R.id.btn_cancelItem);
         btn_cancelItem.setOnClickListener(this);
 
         et_nameViewItem = (EditText) findViewById(R.id.et_nameViewItem);
@@ -138,7 +144,7 @@ public class ActivityAddAlarmClock extends Activity implements OnClickListener{
                 break;
             case R.id.btn_saveItem:
 
-                days = new ArrayList<Integer>();
+                days = new ArrayList<>();
                 setToggleBtnToList();
                 String name = et_nameViewItem.getText().toString();
                 boolean checkBoxChecked = checkbox_vibro.isChecked();
@@ -148,7 +154,8 @@ public class ActivityAddAlarmClock extends Activity implements OnClickListener{
                                        calendarItem,
                                        days,
                                        checkBoxChecked,
-                                       ringtone);
+                                       ringtone,
+                                       ringtoneUri);
                 if(itemEdit != null) {
                     itemNew.setIndex(itemEdit.getIndex());
                 }
@@ -168,7 +175,7 @@ public class ActivityAddAlarmClock extends Activity implements OnClickListener{
                 intentMedia.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Выбери рингтон");
                 intentMedia.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, urie);
 
-                startActivityForResult(intentMedia , 1);
+                startActivityForResult(intentMedia, 1);
 
                 break;
             default:
@@ -286,13 +293,13 @@ public class ActivityAddAlarmClock extends Activity implements OnClickListener{
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 1:
-                    Uri uri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-                    if(uri != null) {
-                        ringtone = uri.toString();
+                    ringtoneUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                    if(ringtoneUri != null) {
+                        ringtone = ringtoneUri.toString();
                         if (ringtone.equals("content://settings/system/ringtone")) {
                             tv_media_name_track.setText("Мелодия по умолчанию");
                         }else {
-                            tv_media_name_track.setText(getRingtonNameFromURI(uri));
+                            tv_media_name_track.setText(getRingtonNameFromURI(ringtoneUri));
                         }
                     } else {
                         tv_media_name_track.setText("");
